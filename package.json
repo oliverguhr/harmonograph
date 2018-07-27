@@ -1,0 +1,12 @@
+{
+  "name": "harmonograph",
+  "version": "1.0.0",
+  "description": "fun drawings",
+  "main": "index.html",
+  "scripts": {
+    "start":"lite-server index.html",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
