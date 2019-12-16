@@ -1,0 +1,102 @@
+<html>
+
+<head>   
+    <style>
+        #canvas {
+            border: 0px solid black;   
+            display: block;
+            margin-left: auto;
+            margin-right: auto;     
+            width:1000px;
+            height:1000px                             
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="1000px" height="1000px"  ></canvas>
+</body>
+<script>
+        class Point
+        {
+            constructor(x=0, y=0) {
+                this.x = x;
+                this.y = y;
+            }
+
+            add(b) {
+                this.x += b.x
+                this.y += b.y
+                return this
+            }
+        }
+    
+
+        var run = true;
+        var timer = null;
+
+       // setTimeout(randomHarmonograph, 100); 
+        document.getElementById("canvas").addEventListener("click", function () {            
+           draw()
+        });
+        
+
+        var ctx = document.getElementById("canvas").getContext("2d");                
+        
+        function randomColor() {
+            r = Math.floor(Math.random() * 256);
+            g = Math.floor(Math.random() * 256);
+            b = Math.floor(Math.random() * 256);
+        }
+
+        var cercle = (time,x,y,radius) =>{
+            const point = new Point()            
+            point.x = x + radius * Math.cos(time)
+            point.y = y - radius * Math.sin(time)
+            return point
+        }
+
+        var scale = (time,max) => {
+            return (time* max) / (2*Math.PI)
+        }
+
+        var scaleSin = (time,max) => {
+            return Math.abs(Math.sin(time)) * max
+        }
+
+        /**
+        The harmonograph movements can be described matematically with the following equations:
+        x = A1 * sin(f1 * t + p1) * exp(-d1 * t) + A2 * sin(f2 * t + p2) * exp(-d2 * t)
+        y = A3 * sin(f3 * t + p3) * exp(-d3 * t) + A4 * sin(f4 * t + p4) * exp(-d4 * t)
+        */
+        function draw() {
+            //ctx.clearRect(0, 0, 1000, 1000);
+            ctx.save();
+            ctx.fillStyle = "#ffffff";
+            //ctx.strokeStyle = "rgb(" + r + "," + g + "," + b + ")";
+            ctx.strokeStyle = "#000000"
+            ctx.fillRect(0, 0, 1000, 1000);
+            ctx.translate(1000/2, 1000/2);
+            ctx.beginPath();
+            var step = 0.0001;
+            for (var t = 0; t <= 3*Math.PI; t += step) {
+                
+                let point = new Point();
+
+                const cercle2 = cercle(t,20,0,300)
+                const cercle1 = cercle(t*300,0,0,scale(t,130))
+                
+                point.add(cercle1)
+                point.add(cercle2)
+                
+                //point.x += t *20
+                //point.y += t *20 
+                
+                ctx.lineTo(point.x, point.y);                                
+            }
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        draw()
+    </script>
+</html>
