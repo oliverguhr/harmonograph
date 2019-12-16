@@ -3,17 +3,16 @@
 <head>   
     <style>
         #canvas {
-            border: 0px solid black;   
+            border: 1px solid black;   
             display: block;
             margin-left: auto;
-            margin-right: auto;     
-            width:1000px;
-            height:1000px                             
+            margin-right: auto;                 
+            height:1000px;                             
         }
     </style>
 </head>
 <body>
-    <canvas id="canvas" width="1000px" height="1000px"  ></canvas>
+    <canvas id="canvas" width="2000px" height="2000px"  ></canvas>
 </body>
 <script>
         class Point
@@ -55,12 +54,12 @@
             return point
         }
 
-        var scale = (time,max) => {
-            return (time* max) / (2*Math.PI)
+        var scale = (time,max,min=0) => {
+            return ((time * (max-min)) / (Math.PI))+min
         }
 
-        var scaleSin = (time,max) => {
-            return Math.abs(Math.sin(time)) * max
+        var scaleSine = (time,max,min=0) => {
+            return Math.sin(time)*(max-min)+min
         }
 
         /**
@@ -73,25 +72,23 @@
             ctx.save();
             ctx.fillStyle = "#ffffff";
             //ctx.strokeStyle = "rgb(" + r + "," + g + "," + b + ")";
-            ctx.strokeStyle = "#000000"
-            ctx.fillRect(0, 0, 1000, 1000);
-            ctx.translate(1000/2, 1000/2);
+            ctx.strokeStyle = "#000000"      
+            ctx.lineWidth = 1;      
+            ctx.fillRect(0, 0, 2000, 2000);
+            ctx.translate(2000/2, 2000/2);
             ctx.beginPath();
-            var step = 0.0001;
-            for (var t = 0; t <= 3*Math.PI; t += step) {
+            var step = 0.00001;
+            const multi = 2.5
+            for (var t = 0; t <= multi*Math.PI; t += step) {
                 
-                let point = new Point();
-
-                const cercle2 = cercle(t,20,0,300)
-                const cercle1 = cercle(t*300,0,0,scale(t,130))
-                
+                let point = new Point();                            
+                const cercle1 = cercle(t*300,0,0,scaleSine(t/multi,60,1))
+                const cercle2 = cercle(t,0,0,scale(t/multi,250,185))
                 point.add(cercle1)
-                point.add(cercle2)
-                
-                //point.x += t *20
-                //point.y += t *20 
-                
-                ctx.lineTo(point.x, point.y);                                
+                point.add(cercle2)                                            
+                ctx.lineTo(point.x*3, point.y*3);   
+
+                //ctx.lineTo(point.x*2, point.y*2);   
             }
             ctx.stroke();
             ctx.restore();
