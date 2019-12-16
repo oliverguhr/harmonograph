@@ -2,13 +2,16 @@
 
 <head>   
     <style>
+        body{
+            background-color: #000
+        }
         #canvas {
-            border: 1px solid black;   
+            border: 0px solid black;   
             display: block;
             margin-left: auto;
             margin-right: auto;                 
             height:1000px;                             
-        }
+        }     
     </style>
 </head>
 <body>
@@ -70,27 +73,37 @@
         function draw() {
             //ctx.clearRect(0, 0, 1000, 1000);
             ctx.save();
-            ctx.fillStyle = "#ffffff";
+            ctx.fillStyle = "#000000";
             //ctx.strokeStyle = "rgb(" + r + "," + g + "," + b + ")";
-            ctx.strokeStyle = "#000000"      
+            ctx.strokeStyle = "#FF3C00a0"      
             ctx.lineWidth = 1;      
             ctx.fillRect(0, 0, 2000, 2000);
             ctx.translate(2000/2, 2000/2);
             ctx.beginPath();
             var step = 0.00001;
+            
+            for (var t = 0; t <= 2*Math.PI; t += step) {
+                const point2 = cercle(t*200,0,0,scaleSine(t*10,100,95)).add(cercle(t,0,0,200))
+                ctx.lineTo(point2.x*3, point2.y*3); 
+            }
+            ctx.stroke();
+            ctx.strokeStyle = "#FF3C00ff"  
+            ctx.beginPath();
             const multi = 2.5
             for (var t = 0; t <= multi*Math.PI; t += step) {
                 
                 let point = new Point();                            
-                const cercle1 = cercle(t*300,0,0,scaleSine(t/multi,60,1))
+                const cercle1 = cercle(t*200,0,0,scaleSine(t/multi,60,2))
                 const cercle2 = cercle(t,0,0,scale(t/multi,250,185))
                 point.add(cercle1)
                 point.add(cercle2)                                            
-                ctx.lineTo(point.x*3, point.y*3);   
-
-                //ctx.lineTo(point.x*2, point.y*2);   
+                ctx.lineTo(point.x*3, point.y*3);  
+                
+                
             }
+            
             ctx.stroke();
+
             ctx.restore();
         }
 
