@@ -1,0 +1,132 @@
+<html>
+
+<head>   
+    <style>
+        body{
+            background-color: #ffffff;            
+        }
+        #canvas {
+            border: 0px solid black;   
+            display: block;
+            margin-left: auto;
+            margin-right: auto;                 
+            height:1000px;                             
+        }     
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="2000px" height="2000px" ></canvas>
+</body>
+<script>
+        class Point
+        {
+            constructor(x=0, y=0) {
+                this.x = x;
+                this.y = y;
+            }
+
+            add(b) {
+                this.x += b.x
+                this.y += b.y
+                return this
+            }            
+            rotate(angle,origin){
+                origin = origin == undefined ? new Point(0,0) : origin
+                angle = angle * (Math.PI / 180)
+
+                // translate point back to origin:
+                this.x -= origin.x;
+                this.y -= origin.y;
+
+                // rotate point
+                const s = Math.sin(angle);
+                const c = Math.cos(angle);
+                const xnew = this.x * c - this.y * s;
+                const ynew = this.x * s + this.y * c;
+
+                // translate point back:
+                this.x = xnew + origin.x;
+                this.y = ynew + origin.y;
+                return this
+            }
+        }
+    
+
+        var run = true;
+        var timer = null;
+
+       // setTimeout(randomHarmonograph, 100); 
+        document.getElementById("canvas").addEventListener("click", function () {            
+           draw()
+        });
+        
+
+        var ctx = document.getElementById("canvas").getContext("2d");                
+        
+        function randomColor() {
+            r = Math.floor(Math.random() * 256);
+            g = Math.floor(Math.random() * 256);
+            b = Math.floor(Math.random() * 256);
+        }
+
+        var cercle = (time,x,y,radius) =>{
+            const point = new Point()            
+            point.x = x + radius * Math.cos(time)
+            point.y = y - radius * Math.sin(time)
+            return point
+        }
+
+        var scale = (time,max,min=0) => {
+            return ((time * (max-min)) / (Math.PI))+min
+        }
+
+        var scaleSine = (time,max,min=0) => {
+            return Math.sin(time)*(max-min)+min
+        }
+        
+        function draw() {
+            //ctx.clearRect(0, 0, 1000, 1000);
+            ctx.save();
+            ctx.fillStyle = "#ffffff";
+            //ctx.strokeStyle = "rgb(" + r + "," + g + "," + b + ")";
+            ctx.strokeStyle = "#04B2D9"      
+            ctx.lineWidth = 2;      
+            ctx.fillRect(0, 0, 2000, 2000);
+            ctx.translate(2000/2, 2000/2);
+            ctx.beginPath();
+            var step = 0.00001;
+            
+            for (var t = 0; t <= 2*Math.PI; t += step) {
+
+                let point = new Point();                            
+                const cercle1 = cercle(t*100,0,0,scaleSine(t/2,scaleSine(t*2,120,110)))
+                const cercle2 = cercle(t/3,0,0,scale(t,130,100))
+                point.add(cercle1)
+                point.add(cercle2)                                            
+                ctx.lineTo(point.x*3, point.y*3);  
+         
+            }
+            ctx.stroke();           
+            ctx.strokeStyle = "#F26671"  
+            ctx.beginPath();
+            const multi = 2.5
+            for (var t = 0; t <= multi*Math.PI; t += step) {
+                
+                let point = new Point();                            
+                const cercle1 = cercle(t*100,0,0,scaleSine(t/2.5,scaleSine(t*1.1,120,100),2))
+                const cercle2 = cercle(t/2,0,0,scale(t,100,100))
+                point.add(cercle1)
+                point.add(cercle2)                 
+
+                point.rotate(230)                           
+                ctx.lineTo(point.x*3.2, point.y*3.2);  
+            }
+            
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        draw()
+    </script>
+</html>
