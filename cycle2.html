@@ -1,0 +1,131 @@
+<html>
+
+<head>   
+    <style>
+        body{
+            background-color: #ffffff
+        }
+        #canvas {
+            border: 0px solid black;   
+            display: block;
+            margin-left: auto;
+            margin-right: auto;                 
+            height:1000px;                             
+        }     
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="2000px" height="2000px"  ></canvas>
+</body>
+<script>
+        class Point
+        {
+            constructor(x=0, y=0) {
+                this.x = x;
+                this.y = y;
+            }
+
+            add(b) {
+                this.x += b.x
+                this.y += b.y
+                return this
+            }            
+            rotate(angle,origin){
+                origin = origin == undefined ? new Point(0,0) : origin
+                angle = angle * (Math.PI / 180)
+
+                // translate point back to origin:
+                this.x -= origin.x;
+                this.y -= origin.y;
+
+                // rotate point
+                const s = Math.sin(angle);
+                const c = Math.cos(angle);
+                const xnew = this.x * c - this.y * s;
+                const ynew = this.x * s + this.y * c;
+
+                // translate point back:
+                this.x = xnew + origin.x;
+                this.y = ynew + origin.y;
+                return this
+            }
+        }
+    
+
+        var run = true;
+        var timer = null;
+
+       // setTimeout(randomHarmonograph, 100); 
+        document.getElementById("canvas").addEventListener("click", function () {            
+           draw()
+        });
+        
+
+        var ctx = document.getElementById("canvas").getContext("2d");                
+        
+        function randomColor() {
+            r = Math.floor(Math.random() * 256);
+            g = Math.floor(Math.random() * 256);
+            b = Math.floor(Math.random() * 256);
+        }
+
+        var cercle = (time,x,y,radius) =>{
+            const point = new Point()            
+            point.x = x + radius * Math.cos(time)
+            point.y = y - radius * Math.sin(time)
+            return point
+        }
+
+        var scale = (time,max,min=0) => {
+            return ((time * (max-min)) / (Math.PI))+min
+        }
+
+        var scaleSine = (time,max,min=0) => {
+            return Math.sin(time)*(max-min)+min
+        }
+
+        /**
+        The harmonograph movements can be described matematically with the following equations:
+        x = A1 * sin(f1 * t + p1) * exp(-d1 * t) + A2 * sin(f2 * t + p2) * exp(-d2 * t)
+        y = A3 * sin(f3 * t + p3) * exp(-d3 * t) + A4 * sin(f4 * t + p4) * exp(-d4 * t)
+        */
+        function draw() {
+            //ctx.clearRect(0, 0, 1000, 1000);
+            ctx.save();
+            ctx.fillStyle = "#ffffff";
+            //ctx.strokeStyle = "rgb(" + r + "," + g + "," + b + ")";
+            ctx.strokeStyle = "rgb(217, 20, 128)"      
+            ctx.lineWidth = 2;      
+            ctx.fillRect(0, 0, 2000, 2000);
+            ctx.translate(2000/2, 2000/2);
+            ctx.beginPath();
+            var step = 0.00001;
+            
+            for (var t = 0; t <= 2*Math.PI; t += step) {
+                const point2 = cercle(t*4,0,0,99)
+                               .add(cercle(t,0,0,150))
+                               .add(cercle(t*500,0,0,40))                                
+                ctx.lineTo(point2.x*3, point2.y*3); 
+            }
+            ctx.stroke();           
+            ctx.strokeStyle = "rgb(27, 98, 191)"  
+            ctx.beginPath();
+            const multi = 2.5
+            for (var t = 0; t <= multi*Math.PI; t += step) {
+                
+                let point = cercle(t*-3,0,0,99)
+                               .add(cercle(t,0,0,150))
+                               .add(cercle(t*500,0,0,40))    
+                               .rotate(60)
+
+                ctx.lineTo(point.x*3, point.y*3);                                  
+            }
+            
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        draw()
+    </script>
+</html>

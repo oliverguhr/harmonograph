@@ -32,16 +32,16 @@
             }
         });
 
-        var A1 = 400, f1 = 2, p1 = 1 / 16, d1 = 0.02;
+        var A1 = 400, f1 = 2, p1 = 1 / 16, d1 = 0.03;
         var A2 = 400, f2 = 2, p2 = 3 / 2, d2 = 0.0315;
-        var A3 = 200, f3 = 2, p3 = 13 / 15, d3 = 0.02;
-        var A4 = 100, f4 = 2, p4 = 1, d4 = 0.02;
+        var A3 = 200, f3 = 2, p3 = 13 / 25, d3 = 0.002;
+        var A4 = 200, f4 = 2, p4 = 1, d4 = 0.02;
 
         var r = 0, g = 0, b = 0;
 
         var ctx = document.getElementById("canvas").getContext("2d");
 
-        setInterval(randomColor, 5000);
+        //setInterval(randomColor, 5000);
 
         timer = setInterval(randomHarmonograph, 16);
 
@@ -58,6 +58,8 @@
         f2 = f2 + Math.random()/randomRange(30,2)
         f3 = f3 + Math.random()/randomRange(30,2)
         f4 = f4 + Math.random()/randomRange(30,2)
+
+        console.log(f1,f2,f3,f4)
         
         function randomHarmonograph() {
             f1 = (f1 + 0.000025) % 10;
